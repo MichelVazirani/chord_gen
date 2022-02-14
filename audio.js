@@ -41,10 +41,8 @@ var decayTime = 0.05
 
 
 
-function playNote(midiNote, startTime) {
-  
-  let freq = midiNoteToFreq[midiNote];
-  
+function playNote(freq, startTime) {
+    
   let osc = audioCtx.createOscillator();
   let gain = audioCtx.createGain();
 
@@ -67,7 +65,16 @@ function playChord(midiNotes, startTime) {
   globalGain.gain.setTargetAtTime(maxAmp/midiNotes.length, startTime, 0);
 
   for (midiNote of midiNotes) {
-    playNote(midiNote, startTime);
+    if (!(midiNote in midiNoteToFreq)) {
+        while (midiNote < 48) {
+            midiNote = midiNote + 12
+        }
+        while (midiNote > 72) {
+            midiNote = midiNote - 12
+        }
+    }
+
+    playNote(midiNoteToFreq[midiNote], startTime);
   }
 
 }
